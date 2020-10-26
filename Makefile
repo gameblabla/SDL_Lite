@@ -3,18 +3,24 @@ SRCDIR		+= ./src/joystick ./src/joystick/linux ./src/loadso/dlopen ./src/power .
 SRCDIR		+= ./src/thread ./src/thread/pthread ./src/timer ./src/timer/unix ./src/video
 SRCDIR      += ./src/cdrom/linux ./src/audio ./src/events ./src/cdrom
 
+ifeq ($(STATIC_ENABLED), 1)
 TARGET = libSDL.a
+else
+TARGET = libSDL.so
+endif
 
 ifeq ($(ALSA), 1)
 SRCDIR 		+= ./src/audio/alsa
 CFLAGS		+= -DSDL_AUDIO_DRIVER_ALSA
 ifeq ($(STATIC_ENABLED), 0)
+else
 CFLAGS		+= -DSDL_AUDIO_DRIVER_ALSA_DYNAMIC
 endif
 else ifeq ($(PULSE), 1)
 SRCDIR		+= ./src/audio/pulse
 CFLAGS		+= -DSDL_AUDIO_DRIVER_PULSEAUDIO
 ifeq ($(STATIC_ENABLED), 0)
+else
 CFLAGS		+= -DSDL_AUDIO_DRIVER_PULSEAUDIO_DYNAMIC
 endif
 else ifeq ($(OSS), 1)
@@ -55,7 +61,11 @@ all: $(TARGET)
 
 # Rules to make executable
 $(TARGET): $(OBJS)  
+ifeq ($(STATIC_ENABLED), 1)
 	$(AR) rcs $(TARGET) $^
+else
+	$(CC) -shared $(CFLAGS) $^ -o $@
+endif
 
 $(OBJ_C) : %.o : %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
