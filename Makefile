@@ -1,7 +1,7 @@
 SRCDIR		= ./src ./src/cpuinfo_./src/events ./src/file ./src/filesystem/unix ./src/haptic -
 SRCDIR		+= ./src/joystick ./src/joystick/linux ./src/loadso/dlopen ./src/power ./src/power/linux ./src/stdlib
 SRCDIR		+= ./src/thread ./src/thread/pthread ./src/timer ./src/timer/unix ./src/video
-SRCDIR      += ./src/cdrom/linux ./src/audio ./src/events ./src/cdrom
+SRCDIR      += ./src/cdrom/linux ./src/audio ./src/events ./src/cdrom ./src/haptic/dummy
 
 ifeq ($(STATIC_ENABLED), 1)
 TARGET = libSDL.a
@@ -31,6 +31,9 @@ endif
 ifeq ($(CDROM), 1)
 SRCDIR 		+= ./src/cdrom/linux
 CFLAGS		+= -DSDL_CDROM_LINUX
+else
+CFLAGS		+= -DSDL_CDROM_DUMMY
+SRCDIR 		+= ./src/cdrom/dummy
 endif
 
 ifeq ($(FBDEV), 1)
@@ -64,7 +67,7 @@ $(TARGET): $(OBJS)
 ifeq ($(STATIC_ENABLED), 1)
 	$(AR) rcs $(TARGET) $^
 else
-	$(CC) -shared $(CFLAGS) $^ -o $@
+	$(CC) -shared $(CFLAGS) $^ -o $@ -ldl -ludev -ldrm
 endif
 
 $(OBJ_C) : %.o : %.c
