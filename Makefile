@@ -76,6 +76,7 @@ $(OBJ_S) : %.o : %.S
 install:
 	cp $(TARGET) $(DESTDIR)/$(TARGET)
 	cp sdl.pc $(DESTDIR)$(PREFIX)/lib/pkgconfig
+	cp sdl-config $(DESTDIR)$(PREFIX)/bin/sdl-config
 	
 install-headers:
 	cp include/*.h $(DESTDIR)$(PREFIX)/include/
