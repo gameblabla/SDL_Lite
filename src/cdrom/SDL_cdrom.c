@@ -56,7 +56,11 @@ int SDL_CDROMInit(void) {
 	int retval;
 
 	SDL_numcds = 0;
+	#ifdef SDL_CDROM_DISABLED
+	retval = 0;
+	#else
 	retval = SDL_SYS_CDInit();
+	#endif
 	if(retval == 0) {
 		SDL_cdinitted = 1;
 	}
