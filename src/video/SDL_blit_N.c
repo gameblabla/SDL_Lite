@@ -41,10 +41,10 @@ enum blit_features {
 };
 
 /* Feature 8 is has-Neon */
-#ifdef SDL_ARM_NEON_BLITTERS
-#define GetBlitFeatures() ((SDL_HasARMSIMD() ? BLIT_FEATURE_HAS_ARM_SIMD : 0))
-#else
+#ifndef SDL_ARM_SIMD_BLITTERS
 #define GetBlitFeatures() (0)
+#else
+#define GetBlitFeatures() ((SDL_HasARMSIMD() ? BLIT_FEATURE_HAS_ARM_SIMD : 0))
 #endif
 
 #if SDL_ARM_SIMD_BLITTERS

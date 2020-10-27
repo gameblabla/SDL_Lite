@@ -44,6 +44,12 @@ CFLAGS		+= -DSDL_VIDEO_DRIVER_KMSDRM
 SRCDIR		+= ./src/video/kmsdrm
 endif
 
+ifeq ($(NEON_A64), 1)
+SRCDIR 		+= ./src/video/arm64
+#CFLAGS		+= -DSDL_ARM_NEON_BLITTERS=1
+CFLAGS		+= -D__ARM_ARCH -DARMDETECT
+endif
+
 ifeq ($(NEON), 1)
 SRCDIR 		+= ./src/video/arm
 CFLAGS		+= -DSDL_ARM_NEON_BLITTERS=1
@@ -90,4 +96,4 @@ install-lib:
 install: $(TARGET) install-headers install-lib
 
 clean:
-	rm -f $(TARGET) *.o 
+	rm -f $(TARGET) *.o *.a

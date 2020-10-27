@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009 Nokia Corporation
+ * Copyright ï¿½ 2009 Nokia Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -286,7 +286,7 @@ generate_composite_function \
     RGBtoRGBPixelAlpha_process_pixblock_tail, \
     RGBtoRGBPixelAlpha_process_pixblock_tail_head
 
- /******************************************************************************/
+/******************************************************************************/
 
 .macro ARGBto565PixelAlpha_process_pixblock_head
     vmvn        d6, d3

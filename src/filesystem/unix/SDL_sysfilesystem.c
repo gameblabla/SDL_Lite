@@ -127,8 +127,8 @@ char *SDL_GetBasePath(void) {
 char *SDL_GetPrefPath(const char *org, const char *app) {
 	/*
 	 * We use XDG's base directory spec, even if you're not on Linux.
-	 *  This isn't strictly correct, but the results are relatively sane
-	 *  in any case.
+	 * This isn't strictly correct, but the results are relatively sane
+	 * in any case.
 	 *
 	 * http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 	 */

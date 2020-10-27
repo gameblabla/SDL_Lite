@@ -66,10 +66,10 @@ void SDL_VideoQuit(void);
 void SDL_GL_UpdateRectsLock(SDL_VideoDevice *this, int numrects, SDL_Rect *rects);
 
 static SDL_GrabMode SDL_WM_GrabInputOff(void);
+
 #if defined(SDL_VIDEO_OPENGL) || defined(SDL_VIDEO_OPENGL_ES)
 static int lock_count = 0;
 #endif
-
 
 /*
  * Initialize the video and event subsystems -- determine native pixel format
@@ -281,7 +281,6 @@ static Uint8 SDL_closest_depths[4][8] = {
 	/* 32 bit closest depth ordering */
 	{0, 32, 16, 15, 24, 8,  0, 0}};
 
-
 #define NEGATIVE_ONE -1
 
 int SDL_VideoModeOK(int width, int height, int bpp, Uint32 flags) {
@@ -361,10 +360,11 @@ static int SDL_GetVideoMode(int *w, int *h, int *BitsPerPixel, Uint32 flags) {
 	}
 
 	/* Try the original video mode, get the closest depth */
-	if (this->VideoModeOK)
+	if(this->VideoModeOK) {
 		native_bpp = this->VideoModeOK(this, *w, *h, *BitsPerPixel, flags);
-	else
-	native_bpp = SDL_VideoModeOK(*w, *h, *BitsPerPixel, flags);
+	} else {
+		native_bpp = SDL_VideoModeOK(*w, *h, *BitsPerPixel, flags);
+	}
 	if(native_bpp == *BitsPerPixel) {
 		return (1);
 	}
@@ -540,7 +540,7 @@ SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags) {
 		flags |= SDL_HWSURFACE;
 	}
 
-	is_opengl = ( ( flags & (SDL_OPENGL | SDL_OPENGLES) ) );
+	is_opengl = ((flags & (SDL_OPENGL | SDL_OPENGLES)));
 	if(is_opengl) {
 		/* These flags are for 2D video modes only */
 		flags &= ~(SDL_HWSURFACE | SDL_DOUBLEBUF);
@@ -583,7 +583,7 @@ SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags) {
 	if(mode) { /* Prevent resize events from mode change */
 
 		/* Sam - If we asked for OpenGL mode, and didn't get it, fail */
-	    if ( is_opengl && !(mode->flags & (SDL_OPENGL | SDL_OPENGLES)) ) {
+		if(is_opengl && !(mode->flags & (SDL_OPENGL | SDL_OPENGLES))) {
 			mode = NULL;
 			SDL_SetError("OpenGL not available");
 		}
@@ -655,7 +655,7 @@ SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags) {
 	SDL_GetRelativeMouseState(NULL, NULL); /* Clear first large delta */
 
 	/* Load GL symbols (before MakeCurrent, where we need glGetString). */
-	if ( flags & (SDL_OPENGL | SDL_OPENGLBLIT) ) {
+	if(flags & (SDL_OPENGL | SDL_OPENGLBLIT)) {
 
 #if SDL_VIDEO_OPENGL
 
@@ -690,16 +690,16 @@ SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags) {
 #define __SDL_NOGETPROCADDR__
 #endif
 #ifdef __SDL_NOGETPROCADDR__
-    #define SDL_PROC(ret,func,params) video->GLES_##func=func;
+#define SDL_PROC(ret,func,params) video->GLES_##func=func;
 #else
-    #define SDL_PROC(ret,func,params) \
-    if (flags & SDL_OPENGLES) do { \
-        video->GLES_##func = SDL_GLES_GetProcAddress(#func); \
-        if ( ! video->GLES_##func ) { \
-            SDL_SetError("Couldn't load GLES function: %s\n", #func); \
-        return(NULL); \
-        } \
-    } while ( 0 );
+#define SDL_PROC(ret,func,params) \
+	if (flags & SDL_OPENGLES) do { \
+		video->GLES_##func = SDL_GLES_GetProcAddress(#func); \
+		if ( ! video->GLES_##func ) { \
+			SDL_SetError("Couldn't load GLES function: %s\n", #func); \
+		return(NULL); \
+		} \
+	} while ( 0 );
 
 #endif /* __SDL_NOGETPROCADDR__ */
 
@@ -709,17 +709,15 @@ SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags) {
 
 	}
 	/* If we're running OpenGL, make the context current */
-	if ( (video->screen->flags & SDL_OPENGL) &&
-	      video->GL_MakeCurrent ) {
-		if ( video->GL_MakeCurrent(this) < 0 ) {
-			return(NULL);
+	if((video->screen->flags & SDL_OPENGL) && video->GL_MakeCurrent) {
+		if(video->GL_MakeCurrent(this) < 0) {
+			return (NULL);
 		}
 	}
 
 	/* If we're running OpenGL ES, make the context current */
-	if ( (video->screen->flags & SDL_OPENGLES) &&
-	      video->GLES_MakeCurrent ) {
-		if ( video->GLES_MakeCurrent(this) < 0 ) {
+	if((video->screen->flags & SDL_OPENGLES) && video->GLES_MakeCurrent) {
+		if(video->GLES_MakeCurrent(this) < 0) {
 			return (NULL);
 		}
 	}
@@ -813,7 +811,7 @@ SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, Uint32 flags) {
 		2.  We need a hardware palette and didn't get one.
 		3.  We need a software surface and got a hardware surface.
 	*/
-	if (!((SDL_VideoSurface->flags & (SDL_OPENGL | SDL_OPENGLES)) && (!(flags&SDL_ANYFORMAT)) && (SDL_VideoSurface->format->BitsPerPixel != bpp)) || ((flags&SDL_HWPALETTE) && !(SDL_VideoSurface->flags&SDL_HWPALETTE)) ||
+	if(!((SDL_VideoSurface->flags & (SDL_OPENGL | SDL_OPENGLES)) && (!(flags & SDL_ANYFORMAT)) && (SDL_VideoSurface->format->BitsPerPixel != bpp)) || ((flags & SDL_HWPALETTE) && !(SDL_VideoSurface->flags & SDL_HWPALETTE)) ||
 	   /* If the surface is in hardware, video writes are visible as soon as they are performed, so we need to buffer them */
 	   (((flags & SDL_HWSURFACE) == SDL_SWSURFACE) && (SDL_VideoSurface->flags & SDL_HWSURFACE)) ||
 	   /* Double Buffer */
@@ -1317,24 +1315,24 @@ int SDL_GL_LoadLibrary(const char *path) {
 }
 
 /* Load the GLES driver library */
-int SDL_GLES_LoadLibrary(const char *path)
-{
+int SDL_GLES_LoadLibrary(const char *path) {
 	SDL_VideoDevice *video = current_video;
 	SDL_VideoDevice *this = current_video;
 	int retval;
 
 	retval = -1;
-	if ( video == NULL ) {
+	if(video == NULL) {
 		SDL_SetError("Video subsystem has not been initialized");
 	} else {
-		if ( video->GLES_LoadLibrary ) {
+		if(video->GLES_LoadLibrary) {
 			retval = video->GLES_LoadLibrary(this, path);
 		} else {
 			SDL_SetError("No dynamic GLES support in video driver");
 		}
 	}
-	return(retval);
+	return (retval);
 }
+
 void *SDL_GL_GetProcAddress(const char *proc) {
 	SDL_VideoDevice *video = current_video;
 	SDL_VideoDevice *this = current_video;
@@ -1353,15 +1351,14 @@ void *SDL_GL_GetProcAddress(const char *proc) {
 	return func;
 }
 
-void *SDL_GLES_GetProcAddress(const char* proc)
-{
+void *SDL_GLES_GetProcAddress(const char *proc) {
 	SDL_VideoDevice *video = current_video;
 	SDL_VideoDevice *this = current_video;
 	void *func;
 
 	func = NULL;
-	if ( video->GLES_GetProcAddress ) {
-		if ( video->gl_config.driver_loaded ) {
+	if(video->GLES_GetProcAddress) {
+		if(video->gl_config.driver_loaded) {
 			func = video->GLES_GetProcAddress(this, proc);
 		} else {
 			SDL_SetError("No GLES driver has been loaded");
@@ -1444,9 +1441,9 @@ int SDL_GL_GetAttribute(SDL_GLattr attr, int *value) {
 	SDL_VideoDevice *video = current_video;
 	SDL_VideoDevice *this = current_video;
 
-	if ( video->GLES_GetAttribute ) {
+	if(video->GLES_GetAttribute) {
 		retval = this->GLES_GetAttribute(this, attr, value);
-	} else if ( video->GL_GetAttribute ) {
+	} else if(video->GL_GetAttribute) {
 		retval = this->GL_GetAttribute(this, attr, value);
 	} else {
 		*value = 0;
@@ -1460,9 +1457,9 @@ void SDL_GL_SwapBuffers(void) {
 	SDL_VideoDevice *video = current_video;
 	SDL_VideoDevice *this = current_video;
 
-	if ( video->screen->flags & SDL_OPENGLES ) {
+	if(video->screen->flags & SDL_OPENGLES) {
 		video->GLES_SwapBuffers(this);
-	} else if ( video->screen->flags & SDL_OPENGL ) {
+	} else if(video->screen->flags & SDL_OPENGL) {
 		video->GL_SwapBuffers(this);
 	} else {
 		SDL_SetError("OpenGL video mode has not been set");
@@ -1550,8 +1547,7 @@ void SDL_GL_UpdateRects(int numrects, SDL_Rect *rects) {
 }
 
 /* Lock == save current state */
-void SDL_GL_Lock()
-{
+void SDL_GL_Lock() {
 #if defined(SDL_VIDEO_OPENGL) || defined(SDL_VIDEO_OPENGL_ES)
 	lock_count--;
 	if (lock_count==-1)
@@ -1635,8 +1631,7 @@ void SDL_GL_Lock()
 }
 
 /* Unlock == restore saved state */
-void SDL_GL_Unlock()
-{
+void SDL_GL_Unlock() {
 #if defined(SDL_VIDEO_OPENGL) || defined(SDL_VIDEO_OPENGL_ES)
 	lock_count++;
 	if (lock_count==0)
@@ -1670,7 +1665,6 @@ void SDL_GL_Unlock()
 	}
 #endif
 }
-
 
 void SDL_Audio_SetCaption(const char *caption);
 
@@ -1901,13 +1895,13 @@ static SDL_GrabMode SDL_WM_GrabInputOff(void) {
 int SDL_WM_IconifyWindow(void) {
 	SDL_VideoDevice *video = current_video;
 	SDL_VideoDevice *this = current_video;
-	int retval;
+	int ret;
 
-	retval = 0;
+	ret = 0;
 	if(video->IconifyWindow) {
-		retval = video->IconifyWindow(this);
+		ret = video->IconifyWindow(this);
 	}
-	return (retval);
+	return (ret);
 }
 
 /*
