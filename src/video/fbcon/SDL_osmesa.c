@@ -38,7 +38,7 @@
 #include "SDL_error.h"
 #include "SDL_osmesa.h"
 
-#define DEFAULT_OPENGL    "libOSMesa.so"
+#define DEFAULT_OPENGL "libOSMesa.so"
 
 /* member variable names */
 #define gl_active      (this->gl_data->gl_active)
@@ -56,17 +56,16 @@ int SDL_OSMesa_CreateContext(_THIS, SDL_Surface *screen) {
 			return -1;
 		}
 	}
-
-	/* osmesa (mesa ver. 5) does support following pixel formats:
-	   OSMESA_COLOR_INDEX:  8Bit palette
-	   OSMESA_RGBA:         4*8 Bit
-	   OSMESA_BGRA
-	   OSMESA_ARGB
-	   OSMESA_RGB:          3*8 Bit
-	   OSMESA_BGR
-	   OSMESA_RGB_565       16Bit
-
-	   for now we use only OSMESA_RGBA and OSMESA_RGB_565
+	/**
+	 * osmesa (mesa ver. 5) does support following pixel formats:
+	 * OSMESA_COLOR_INDEX:  8Bit palette
+	 * OSMESA_RGBA:         4*8 Bit
+	 * OSMESA_BGRA
+	 * OSMESA_ARGB
+	 * OSMESA_RGB:          3*8 Bit
+	 * OSMESA_BGR
+	 * OSMESA_RGB_565       16Bit
+	 * for now we use only OSMESA_RGBA and OSMESA_RGB_565
 	*/
 	switch (screen->format->BitsPerPixel) {
 #ifdef OSMESA_RGB_565

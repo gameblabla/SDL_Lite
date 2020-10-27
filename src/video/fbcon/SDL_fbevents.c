@@ -233,8 +233,8 @@ int FB_OpenKeyboard(_THIS) {
 			NULL
 		};
 		static const char *const vcs[] = {
-			"/dev/vc/%d",
-			"/dev/tty%d",
+			"/dev/tty%02d",
+			"/dev/vc/%02d",
 			NULL
 		};
 		int i, tty0_fd;
@@ -253,7 +253,7 @@ int FB_OpenKeyboard(_THIS) {
 		if(current_vt > 0) {
 			for (i = 0; vcs[i] && (keyboard_fd < 0); ++i) {
 				char vtpath[12];
-				SDL_snprintf(vtpath, SDL_arraysize(vtpath), vcs[i], current_vt);
+				SDL_snprintf(vtpath, SDL_arraysize(vtpath), vcs[i], current_vt < 0);
 				keyboard_fd = open(vtpath, O_RDWR, 0);
 #ifdef DEBUG_KEYBOARD
 				fprintf(stderr, "vtpath = %s, fd = %d\n", vtpath, keyboard_fd);
