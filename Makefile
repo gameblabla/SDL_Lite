@@ -47,13 +47,11 @@ endif
 ifeq ($(NEON_A64), 1)
 SRCDIR 		+= ./src/video/arm64
 #CFLAGS		+= -DSDL_ARM_NEON_BLITTERS=1
-CFLAGS		+= -D__ARM_ARCH -DARMDETECT
 endif
 
 ifeq ($(NEON), 1)
 SRCDIR 		+= ./src/video/arm
 CFLAGS		+= -DSDL_ARM_NEON_BLITTERS=1
-CFLAGS		+= -D__ARM_ARCH -DARMDETECT
 endif
 
 CFLAGS		+= -D_GNU_SOURCE -DHAVE_LIBC -D_REENTRANT
@@ -88,7 +86,7 @@ install:
 	cp sdl-config $(DESTDIR)$(PREFIX)/bin/sdl-config
 	
 install-headers:
-	cp include/*.h $(DESTDIR)$(PREFIX)/include/
+	cp include/*.h $(DESTDIR)$(PREFIX)/include/SDL
 
 install-lib:
 	cp $(TARGET) $(DESTDIR)$(PREFIX)/lib/

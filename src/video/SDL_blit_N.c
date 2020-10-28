@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 /*******************************************************************************
  * Library       : SDLite 1.2.x
  * Purpose       : Low-level access to a framebuffer, audio output and HID.
@@ -7,8 +8,8 @@
  * License       : GNU General Public License v3.0
  *******************************************************************************
  *
- * TinyRetroLabs and SDLite 1.2.x:
- * Copyright (c) 2019-2020 Marcus Andrade <boogermann@tinyretrolabs.org>
+ * Rætro and SDLite 1.2.x:
+ * Copyright (c) 2019-2020 Marcus Andrade <marcus@raetro.org>
  *
  * Simple DirectMedia Layer and SDL:
  * Copyright (c) 1997-2012 Sam Lantinga <slouken@libsdl.org>
@@ -41,11 +42,7 @@ enum blit_features {
 };
 
 /* Feature 8 is has-Neon */
-#ifndef SDL_ARM_SIMD_BLITTERS
-#define GetBlitFeatures() (0)
-#else
 #define GetBlitFeatures() ((SDL_HasARMSIMD() ? BLIT_FEATURE_HAS_ARM_SIMD : 0))
-#endif
 
 #if SDL_ARM_SIMD_BLITTERS
 void Blit_BGR888_RGB888ARMSIMDAsm(int32_t w, int32_t h, uint32_t *dst, int32_t dst_stride, uint32_t *src, int32_t src_stride);
