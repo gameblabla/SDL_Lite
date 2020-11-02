@@ -32,14 +32,6 @@
 
 #ifdef SDL_HAPTIC_LINUX
 
-//#include "SDL_assert.h"
-#include "SDL_haptic.h"
-#include "../SDL_syshaptic.h"
-#include "SDL_joystick.h"
-#include "../../joystick/SDL_sysjoystick.h"     /* For the real SDL_Joystick */
-#include "../../joystick/linux/SDL_sysjoystick_c.h"     /* For joystick hwdata */
-#include "../../core/linux/SDL_udev.h"
-
 #include <unistd.h>             /* close */
 #include <linux/input.h>        /* Force feedback linux stuff. */
 #include <fcntl.h>              /* O_RDWR */
@@ -49,6 +41,15 @@
 #include <sys/stat.h>           /* stat */
 #include <stdio.h>
 #include <memory.h>
+
+#include "SDL_assert.h"
+#include "SDL_haptic.h"
+#include "../SDL_syshaptic.h"
+#include "SDL_joystick.h"
+#include "../../joystick/SDL_sysjoystick.h"          /* For the real SDL_Joystick */
+#include "../../joystick/linux/SDL_sysjoystick_c.h"  /* For joystick hwdata */
+#include "../../core/linux/SDL_udev.h"
+
 
 /* Just in case. */
 #ifndef M_PI
@@ -60,8 +61,11 @@
 static int MaybeAddDevice(const char *path);
 
 #if SDL_USE_LIBUDEV
+
 static int MaybeRemoveDevice(const char *path);
+
 static void haptic_udev_callback(SDL_UDEV_deviceevent udev_type, int udev_class, const char *devpath);
+
 #endif /* SDL_USE_LIBUDEV */
 
 /*
@@ -174,13 +178,15 @@ int SDL_SYS_HapticInit(void) {
 	}
 
 #if SDL_USE_LIBUDEV
-	if (SDL_UDEV_Init() < 0) {
-		return SDL_SetError("Could not initialize UDEV");
+	if(SDL_UDEV_Init() < 0) {
+		SDL_SetError("Could not initialize UDEV");
+		return -1;
 	}
 
-	if ( SDL_UDEV_AddCallback(haptic_udev_callback) < 0) {
+	if(SDL_UDEV_AddCallback(haptic_udev_callback) < 0) {
 		SDL_UDEV_Quit();
-		return SDL_SetError("Could not setup haptic <-> udev callback");
+		SDL_SetError("Could not setup haptic <-> udev callback");
+		return -1;
 	}
 
 	/* Force a scan to build the initial device list */
@@ -211,6 +217,7 @@ static SDL_hapticlist_item *HapticByDevIndex(int device_index) {
 }
 
 #if SDL_USE_LIBUDEV
+
 static void haptic_udev_callback(SDL_UDEV_deviceevent udev_type, int udev_class, const char *devpath) {
 	if(devpath == NULL || !(udev_class & SDL_UDEV_DEVICE_JOYSTICK)) {
 		return;
@@ -301,6 +308,7 @@ static int MaybeAddDevice(const char *path) {
 }
 
 #if SDL_USE_LIBUDEV
+
 static int MaybeRemoveDevice(const char *path) {
 	SDL_hapticlist_item *item;
 	SDL_hapticlist_item *prev = NULL;
@@ -535,7 +543,8 @@ int SDL_SYS_HapticOpenFromJoystick(SDL_Haptic *haptic, SDL_Joystick *joystick) {
 	haptic->index = device_index;
 
 	if(device_index >= MAX_HAPTICS) {
-		return SDL_SetError("Haptic: Joystick doesn't have Haptic capabilities");
+		SDL_SetError("Haptic: Joystick doesn't have Haptic capabilities");
+		return -1;
 	}
 
 	fd = open(joystick->hwdata->fname, O_RDWR, 0);
@@ -902,7 +911,8 @@ int SDL_SYS_HapticNewEffect(SDL_Haptic *haptic, struct haptic_effect *effect, SD
 	/* Allocate the hardware effect */
 	effect->hweffect = (struct haptic_hweffect *) SDL_malloc(sizeof(struct haptic_hweffect));
 	if(effect->hweffect == NULL) {
-		return SDL_OutOfMemory();
+		SDL_OutOfMemory();
+		return -1;
 	}
 
 	/* Prepare the ff_effect */

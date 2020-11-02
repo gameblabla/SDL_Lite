@@ -12,7 +12,7 @@
  * Copyright (c) 2019-2020 Marcus Andrade <marcus@raetro.org>
  *
  * Simple DirectMedia Layer and SDL:
- * Copyright (c) 1997-2012 Sam Lantinga <slouken@libsdl.org>
+ * Copyright (c) 1997-2020 Sam Lantinga <slouken@libsdl.org>
  *
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,43 +28,66 @@
  * If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
  *
  ******************************************************************************/
-#ifndef math_libm_h_
-#define math_libm_h_
-
 #include "SDL_config.h"
 
-/**
- * Math routines from uClibc: http://www.uclibc.org
- */
+//#include "SDL_assert.h"
+#include "SDL_poll.h"
 
-double SDL_uclibc_atan(double x);
+#ifdef HAVE_POLL
 
-double SDL_uclibc_atan2(double y, double x);
+#include <poll.h>
 
-double SDL_uclibc_copysign(double x, double y);
+#else
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
 
-double SDL_uclibc_cos(double x);
+#include <errno.h>
 
-double SDL_uclibc_exp(double x);
+int SDL_IOReady(int fd, SDL_bool forWrite, int timeoutMS) {
+	int result;
 
-double SDL_uclibc_fabs(double x);
+	/* Note: We don't bother to account for elapsed time if we get EINTR */
+	do {
+#ifdef HAVE_POLL
+		struct pollfd info;
 
-double SDL_uclibc_floor(double x);
+		info.fd = fd;
+		if(forWrite) {
+			info.events = POLLOUT;
+		} else {
+			info.events = POLLIN | POLLPRI;
+		}
+		result = poll(&info, 1, timeoutMS);
+#else
+		fd_set rfdset, *rfdp = NULL;
+		fd_set wfdset, *wfdp = NULL;
+		struct timeval tv, *tvp = NULL;
 
-double SDL_uclibc_fmod(double x, double y);
+		/* If this assert triggers we'll corrupt memory here */
+		SDL_assert(fd >= 0 && fd < FD_SETSIZE);
 
-double SDL_uclibc_log(double x);
+		if (forWrite) {
+			FD_ZERO(&wfdset);
+			FD_SET(fd, &wfdset);
+			wfdp = &wfdset;
+		} else {
+			FD_ZERO(&rfdset);
+			FD_SET(fd, &rfdset);
+			rfdp = &rfdset;
+		}
 
-double SDL_uclibc_log10(double x);
+		if (timeoutMS >= 0) {
+			tv.tv_sec = timeoutMS / 1000;
+			tv.tv_usec = (timeoutMS % 1000) * 1000;
+			tvp = &tv;
+		}
 
-double SDL_uclibc_pow(double x, double y);
+		result = select(fd + 1, rfdp, wfdp, NULL, tvp);
+#endif /* HAVE_POLL */
 
-double SDL_uclibc_scalbn(double x, int n);
+	} while (result < 0 && errno == EINTR);
 
-double SDL_uclibc_sin(double x);
-
-double SDL_uclibc_sqrt(double x);
-
-double SDL_uclibc_tan(double x);
-
-#endif /* math_libm_h_ */
+	return result;
+}

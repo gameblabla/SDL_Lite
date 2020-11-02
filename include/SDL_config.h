@@ -166,37 +166,37 @@
 /* #undef HAVE_ACOSF */
 /* #undef HAVE_ASIN */
 /* #undef HAVE_ASINF */
-/* #undef HAVE_ATAN */
+#define HAVE_ATAN 1
 /* #undef HAVE_ATANF */
-/* #undef HAVE_ATAN2 */
+#define HAVE_ATAN2 1
 /* #undef HAVE_ATAN2F */
 /* #undef HAVE_CEIL */
 /* #undef HAVE_CEILF */
-/* #undef HAVE_COPYSIGN */
-/* #undef HAVE_COPYSIGNF */
-/* #undef HAVE_COS */
+#define HAVE_COPYSIGN 1
+#define HAVE_COPYSIGNF 1
+#define HAVE_COS 1
 /* #undef HAVE_COSF */
-/* #undef HAVE_EXP */
+#define HAVE_EXP 1
 /* #undef HAVE_EXPF */
-/* #undef HAVE_FABS */
-/* #undef HAVE_FABSF */
-/* #undef HAVE_FLOOR */
+#define HAVE_FABS 1
+#define HAVE_FABSF 1
+#define HAVE_FLOOR 1
 /* #undef HAVE_FLOORF */
-/* #undef HAVE_FMOD */
+#define HAVE_FMOD 1
 /* #undef HAVE_FMODF */
-/* #undef HAVE_LOG */
+#define HAVE_LOG 1
 /* #undef HAVE_LOGF */
-/* #undef HAVE_LOG10 */
+#define HAVE_LOG10 1
 /* #undef HAVE_LOG10F */
-/* #undef HAVE_POW */
+#define HAVE_POW 1
 /* #undef HAVE_POWF */
-/* #undef HAVE_SCALBN */
+#define HAVE_SCALBN 1
 /* #undef HAVE_SCALBNF */
-/* #undef HAVE_SIN */
+#define HAVE_SIN 1
 /* #undef HAVE_SINF */
-/* #undef HAVE_SQRT */
+#define HAVE_SQRT 1
 /* #undef HAVE_SQRTF */
-/* #undef HAVE_TAN */
+#define HAVE_TAN 1
 /* #undef HAVE_TANF */
 #define HAVE_FOPEN64 1
 #define HAVE_FSEEKO 1

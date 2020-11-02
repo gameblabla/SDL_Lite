@@ -1,7 +1,7 @@
-SRCDIR		= ./src ./src/cpuinfo_./src/events ./src/file ./src/filesystem/unix ./src/haptic -
+SRCDIR		= ./src ./src/cpuinfo ./src/events ./src/file ./src/filesystem/unix ./src/haptic -
 SRCDIR		+= ./src/joystick ./src/joystick/linux ./src/loadso/dlopen ./src/power ./src/power/linux ./src/stdlib
 SRCDIR		+= ./src/thread ./src/thread/pthread ./src/timer ./src/timer/unix ./src/video
-SRCDIR      += ./src/audio ./src/events ./src/cdrom ./src/haptic/dummy
+SRCDIR      += ./src/audio ./src/cdrom ./src/haptic/dummy
 
 ifeq ($(STATIC_ENABLED), 1)
 TARGET = libSDL.a
@@ -94,4 +94,4 @@ install-lib:
 install: $(TARGET) install-headers install-lib
 
 clean:
-	rm -f $(TARGET) *.o *.a
+	rm -f $(TARGET) *.o *.a *.so
