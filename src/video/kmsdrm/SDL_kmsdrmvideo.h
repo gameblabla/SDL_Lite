@@ -148,7 +148,22 @@ struct SDL_PrivateVideoData {
 	int w, h, crtc_w, crtc_h;
 	int bpp;
 	int has_damage_clips;
+	void *buffer;
+	void *buffer2;
 };
+
+#ifdef ENABLE_KMSDRM_DEBUG
+#define kmsdrm_dbg_printf(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#else
+#define kmsdrm_dbg_printf(fmt, ...)
+#endif
+
+/* Hidden "this" pointer for the video functions */
+#define _THIS	SDL_VideoDevice *this
+
+#define KMSDRM_RMASK16 0xF800
+#define KMSDRM_GMASK16 0x07E0
+#define KMSDRM_BMASK16 0x001F
 
 #define drm_vid_modes        (this->hidden->vid_modes)
 #define drm_vid_mode_count   (this->hidden->vid_mode_count)

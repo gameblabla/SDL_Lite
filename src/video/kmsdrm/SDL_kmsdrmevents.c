@@ -284,6 +284,7 @@ static const SDLKey keymap[] = {
 	[BTN_LEFT] = SDL_BUTTON_LEFT,
 	[BTN_RIGHT] = SDL_BUTTON_RIGHT,
 	[BTN_MIDDLE] = SDL_BUTTON_MIDDLE,
+	
 };
 
 void KMSDRM_InitOSKeymap(_THIS)
