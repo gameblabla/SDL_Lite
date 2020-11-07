@@ -54,9 +54,7 @@ SRCDIR 		+= ./src/video/arm
 CFLAGS		+= -DSDL_ARM_NEON_BLITTERS=1
 endif
 
-SRCDIR 		+= ./go2
-
-CFLAGS		+= -D_GNU_SOURCE -DHAVE_LIBC -D_REENTRANT -Igo2 -I.
+CFLAGS		+= -D_GNU_SOURCE -DHAVE_LIBC -D_REENTRANT -I.
 CFLAGS		+= -Iinclude -std=gnu99 $(shell $(PKG_CONFIG) --cflags libdrm)
 
 VPATH		= $(SRCDIR)
