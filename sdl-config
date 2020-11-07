@@ -43,7 +43,7 @@ while test $# -gt 0; do
       echo -I${prefix}/include/SDL -D_GNU_SOURCE=1 -D_REENTRANT
       ;;
     --libs)
-      echo -L${exec_prefix}/lib  -lSDL -lpthread
+      echo -L${exec_prefix}/lib  -lSDL -lasound -lpthread -lm -ldl -ldrm -ludev -lpthread -lrga -lpng -lgbm -lgo2
       ;;
 	--static-libs)
 	  echo -L${exec_prefix}/lib  -lSDL -lasound -lpthread -lm -ldl -ldrm -ludev -lpthread -lrga -lpng -lgbm -lgo2
