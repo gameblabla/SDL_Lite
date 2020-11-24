@@ -86,6 +86,7 @@ install:
 	cp sdl-config $(DESTDIR)$(PREFIX)/bin/sdl-config
 	
 install-headers:
+	mkdir -p $(DESTDIR)$(PREFIX)/include/SDL
 	cp include/*.h $(DESTDIR)$(PREFIX)/include/SDL
 
 install-lib:
